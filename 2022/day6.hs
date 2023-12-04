@@ -5,7 +5,6 @@ main = do
 
     print $ find_first_14_different contents 14
 
---
 
 find_first_14_different :: String -> Int -> Int
 find_first_14_different (x:xs) position = 
@@ -23,6 +22,3 @@ are_all_different [] = True
 is_different_from_rest :: Char -> String -> Bool
 is_different_from_rest char (x:xs) = char /= x && is_different_from_rest char xs
 is_different_from_rest _ [] = True
-
-
--- f h x o x 0 a

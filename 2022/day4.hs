@@ -1,12 +1,4 @@
--- 2-4,6-8
--- 2-3,4-5
--- 5-7,7-9
--- 2-8,3-7
--- 6-6,4-6
--- 2-6,4-8
-
 import Data.List (sort)
-
 
 main = do
     contents <- getContents
@@ -45,7 +37,6 @@ removeSortedDuplicates [] = []
 removeDuplicates :: [Integer] -> [Integer]
 removeDuplicates a = removeSortedDuplicates (sort a)
 
-
 includeEachOther :: ([Integer], [Integer]) -> Bool
 includeEachOther (listA, listB) = (length combinedList /= combinedLength)
     where combinedList = removeDuplicates (listA ++ listB)
@@ -53,6 +44,3 @@ includeEachOther (listA, listB) = (length combinedList /= combinedLength)
 
 combineLists :: ([Integer], [Integer]) -> [Integer]
 combineLists (a,b) = removeDuplicates (a ++ b)
-
--- put them all uniquely into one list
--- if the length of that combined list is the same as one of the other -> it is fully included
