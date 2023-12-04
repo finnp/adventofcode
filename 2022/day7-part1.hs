@@ -5,7 +5,7 @@ type Session = ([String], Tree)
 
 cd :: String -> [String] -> [String]
 cd "/" _          = []
-cd ".." (_:rest)  = rest
+cd ".." cwd  = init cwd
 cd dir cwd        = cwd ++ [dir]
 
 append :: [String] -> [Tree] -> Tree -> Tree
@@ -39,31 +39,9 @@ parseFile :: String -> Tree
 parseFile line = if (head parts == "dir") then (Directory (parts !! 1) []) else (File (parts !! 1) (read (parts !! 0) :: Int))
     where parts = words line
 
-
--- $ cd /
--- $ ls
--- dir a
--- 14848514 b.txt
--- 8504156 c.dat
--- dir d
--- $ cd a
--- $ ls
--- dir e
--- 29116 f
--- 2557 g
--- 62596 h.lst
--- $ cd e
--- $ ls
--- 584 i
--- $ cd ..
--- $ cd ..
--- $ cd d
--- $ ls
--- 4060174 j
--- 8033020 d.log
--- 5626152 d.ext
--- 7214296 k
-
+countSize :: Tree -> Int
+countSize (File _ size) = size
+countSize (Directory _ files) = sum $ map countSize files
 
 main = do
     contents <- getContents
@@ -72,22 +50,21 @@ main = do
     let session = ([], Directory "/" [])
     let commands =  parseCommands unparsedCommands
 
-    print $ foldl applyCommand session commands
+    print commands
 
+    let fullSession =  foldl applyCommand session commands
+    print fullSession
+    let directories = listAllDirectories $ snd fullSession
+    let allSizes = map countSize directories
 
--- data Command = ChangeDirectory String | 
+    putStrLn $ treeToStr 0 (snd fullSession)
 
--- - / (dir)
---   - a (dir)
---     - e (dir)
---       - i (file, size=584)
---     - f (file, size=29116)
---     - g (file, size=2557)
---     - h.lst (file, size=62596)
---   - b.txt (file, size=14848514)
---   - c.dat (file, size=8504156)
---   - d (dir)
---     - j (file, size=4060174)
---     - d.log (file, size=8033020)
---     - d.ext (file, size=5626152)
---     - k (file, size=7214296)
+    print $ sum $ filter (<=100000) allSizes
+
+listAllDirectories :: Tree -> [Tree]
+listAllDirectories (Directory name files) = (Directory name files) : (concat (map listAllDirectories files))
+listAllDirectories _ = []
+
+treeToStr :: Int -> Tree -> String
+treeToStr level (Directory dir files) = (replicate level '\t') ++  "- " ++ dir ++ "(dir)\n" ++ (foldl (++) "" (map (treeToStr (level + 1)) files)) 
+treeToStr level (File name size) = (replicate level '\t') ++  "- " ++ name ++ " (file) \n"
