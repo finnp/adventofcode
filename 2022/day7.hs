@@ -1,3 +1,5 @@
+import Data.List
+
 data Tree = Empty | Directory String [Tree] | File String Int
     deriving (Show)
 
@@ -50,16 +52,22 @@ main = do
     let session = ([], Directory "/" [])
     let commands =  parseCommands unparsedCommands
 
-    print commands
-
     let fullSession =  foldl applyCommand session commands
-    print fullSession
-    let directories = listAllDirectories $ snd fullSession
-    let allSizes = map countSize directories
+    let tree = snd fullSession
+    let directories = listAllDirectories tree
+    let allSizes = sort $ map countSize directories
 
     putStrLn $ treeToStr 0 (snd fullSession)
 
-    print $ sum $ filter (<=100000) allSizes
+    let totalDiskSpace = 70000000
+    let spaceNeeded = 30000000
+    let spaceUsed = countSize tree
+
+    let spaceAfterDeletion = filter (\size -> spaceUsed - size < totalDiskSpace - spaceNeeded) allSizes
+    
+    print $ head spaceAfterDeletion
+
+
 
 listAllDirectories :: Tree -> [Tree]
 listAllDirectories (Directory name files) = (Directory name files) : (concat (map listAllDirectories files))
