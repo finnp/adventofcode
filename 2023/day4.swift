@@ -226,8 +226,6 @@ func parseCard(input: String) -> Card {
     return Card(id: id, winningNumbers: numbers[0], numbers: numbers[1])
 }
 
-
-
 let cards = input.map { parseCard(input: $0) }
 
 // id = index + 1
