@@ -20,9 +20,8 @@ calculateTotal (a, b) card = (a + b * (read (card !! 1) :: Int), b + 1)
 
 parseHand :: String -> [Int]
 parseHand "JJJJJ" = [5,-1,0,0,0,0,0]
-parseHand cards = [modifiedHighestCard] ++ restCardType ++ [jokerPenalty] ++ (map getCardValue cards)
+parseHand cards = [modifiedHighestCard] ++ restCardType ++ (map getCardValue cards)
     where 
-        jokerPenalty = if numberOfJokers > 0 then -1 else 1
         modifiedHighestCard = highestCard + numberOfJokers
         numberOfJokers = getNumberOfJokes cards
         (highestCard:restCardType) = reverse $ sort $ map length $ group $ sort $ getCardsWithoutJokers cards
