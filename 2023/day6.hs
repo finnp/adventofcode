@@ -26,12 +26,11 @@ join [] _ = []
 getNumberOfWinningCombinations :: TimeDistance -> Int
 getNumberOfWinningCombinations (time, distance) = length $ filter (> distance) distances
     where 
-        distances = map (getDistanceTravelled time) (getAllOptions time)
+        distances = map (getDistanceTravelled time) allOptions
+        allOptions = [1..time - 1]
 
-getAllOptions :: Int -> [Int]
-getAllOptions n = [1..n-1]
 
 getDistanceTravelled :: Int -> Int -> Int
-getDistanceTravelled raceDuration secondsWaited  = secondsWaited * timeLeft
+getDistanceTravelled raceDuration secondsWaited  = secondsWaited * (raceDuration - secondsWaited)
     where
         timeLeft = raceDuration - secondsWaited
