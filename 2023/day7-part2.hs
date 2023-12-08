@@ -5,11 +5,6 @@ main = do
     content <- getContents
     let input = map words $ lines content
 
-    print $ compareCards (parseHand "32T3K") (parseHand "KK677")
-    print $ compareCards (parseHand "32T3K") (parseHand "T55J5")
-    print $ compareCards (parseHand "T55J5") (parseHand "QQQJA")
-    print $ compareCards (parseHand "QQQJA") (parseHand "KTJJT")
-
     let orderedList = sortBy (\a b -> compareCards (parseHand $ head a) (parseHand $ head b)) input
 
     print $ foldl calculateTotal (0, 1) orderedList
