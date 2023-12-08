@@ -15,7 +15,7 @@ calculateTotal (a, b) card = (a + b * (read (card !! 1) :: Int), b + 1)
 
 parseHand :: String -> [Int]
 parseHand "JJJJJ" = [5,-1,0,0,0,0,0]
-parseHand cards = [modifiedHighestCard] ++ restCardType ++ (map getCardValue cards)
+parseHand cards = modifiedHighestCard : (restCardType ++ (map getCardValue cards))
     where 
         modifiedHighestCard = highestCard + numberOfJokers
         numberOfJokers = getNumberOfJokes cards
