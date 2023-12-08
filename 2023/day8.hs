@@ -1,6 +1,9 @@
 import qualified Data.Map as Map
-import Data.List (foldl1)
+import Data.List (foldl')
 import Data.Maybe
+import System.Exit
+import System.Posix.Signals
+import Control.Concurrent
 
 main = do
     content <- getContents
@@ -8,17 +11,15 @@ main = do
     let instructions = rows !! 0
     let network = Map.fromList $ map (prepareForMap . words . cleanString) $ drop 2 rows
 
-    print network
-
-    let start = fromJust $ Map.lookup "AAA" network
-
-    print $ foldl (follow network) (fromJust $ Map.lookup "AAA" network) instructions
+    print $ length $ takeWhile (/="ZZZ") $ lazyFollow network "AAA" (cycle instructions)
     
 
-follow :: Map.Map String (String, String) -> (String, String) -> Char -> (String, String)
-follow network (left, right) 'R' = fromJust $ Map.lookup right network
-follow network (left, right) 'L' = fromJust $ Map.lookup left network
+follow :: Map.Map String (String, String) -> String -> Char -> String
+follow network id 'R' = snd $ fromJust $ Map.lookup id network
+follow network id 'L' = fst $ fromJust $ Map.lookup id network
 
+lazyFollow :: Map.Map String (String, String) -> String -> [Char] -> [String]
+lazyFollow network id commands = scanl (follow network) id commands
 
 cleanString :: String -> String
 cleanString [] = []
