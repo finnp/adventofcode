@@ -1,5 +1,5 @@
 import qualified Data.Map as Map
-import Data.List (foldl')
+import Data.List (foldl', nub)
 import Data.Maybe
 
 -- This approach would take too long for Part 2... combinatorics,..
@@ -12,10 +12,15 @@ main = do
 
     let starting = filter endsWithA $ map (head . words . cleanString) $ drop 2 rows
 
-    print & length starting
-    let test = [starting !! 0, starting !! 1, starting !! 2]
+    print starting
 
-    print $ calculateResult network test (cycle instructions) 0
+    let result = nub $ concat $ map (\a -> prime_factors $ calculateResult network [a] (cycle instructions) 0) starting
+
+    print $ result
+
+
+    -- this would overflow 
+    print $ foldl (*) 1 result
     
 
 endsWithA :: String -> Bool
@@ -45,3 +50,10 @@ cleanString (s:str) = if (s >= 'A' && s <= 'Z') || (s >= '0' && s <= '9') then s
 
 prepareForMap :: [String] -> [(String, String)]
 prepareForMap (id:instructions) = [('L':id, instructions !! 0), ('R':id, instructions !! 1)]
+
+prime_factors :: Int -> [Int]
+prime_factors 1 = []
+prime_factors n
+  | factors == []  = [n]
+  | otherwise = factors ++ prime_factors (n `div` (head factors))
+  where factors = take 1 $ filter (\x -> (n `mod` x) == 0) [2 .. n-1]
