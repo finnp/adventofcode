@@ -2,6 +2,8 @@ import qualified Data.Map as Map
 import Data.List (foldl')
 import Data.Maybe
 
+-- This approach would take too long for Part 2... combinatorics,..
+
 main = do
     content <- getContents
     let rows = lines content
