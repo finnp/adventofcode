@@ -16,10 +16,6 @@ main = do
 
     let result = nub $ concat $ map (\a -> prime_factors $ calculateResult network [a] (cycle instructions) 0) starting
 
-    print $ result
-
-
-    -- this would overflow 
     print $ foldl (*) 1 result
     
 
